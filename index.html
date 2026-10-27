@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Un mensajito para ti 🐶</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffe9e1;--bg2:#e9ddff;--card:#fffaf7;--ink:#5b3a4a;--rose:#ff7fa3;--rose-d:#e0527c;--lilac:#c9b6f2;--butter:#ffe8a3;--ok:#7fd1a8;color-scheme:light;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1d2b;--bg2:#3a2a4d;--card:#3b2b3d;--ink:#ffe9ef;--rose:#ff8fb0;--rose-d:#ff6b97;--lilac:#7d6aa8;--butter:#7a6a35;--ok:#4fae85;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#2a1d2b;--bg2:#3a2a4d;--card:#3b2b3d;--ink:#ffe9ef;--rose:#ff8fb0;--rose-d:#ff6b97;--lilac:#7d6aa8;--butter:#7a6a35;--ok:#4fae85;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;min-height:100dvh;font-family:Fredoka,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,var(--bg),var(--bg2));display:flex;justify-content:center}
+main{width:100%;max-width:480px;padding:20px 18px 40px;text-align:center}
+.screen{display:none}.screen.on{display:block}
+h1,h2{font-weight:600;margin:.4em 0}
+button{font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;color:#fff;background:var(--rose-d);border:0;border-radius:999px;padding:14px 28px;font-size:1.1rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.15);transition:transform .15s}
+button:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(0,0,0,.15)}
+button:focus-visible,.cell:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.bubble{position:relative;background:var(--card);border-radius:26px;padding:18px 20px;min-height:104px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;line-height:1.45;margin:6px 4px 26px;box-shadow:0 8px 24px rgba(120,60,90,.15)}
+.bubble::after{content:"";position:absolute;bottom:-14px;left:50%;margin-left:-14px;border:14px solid transparent;border-top-color:var(--card);border-bottom:0}
+.bubble span{animation:pop .5s ease}
+@keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+#dog{width:210px;max-width:60vw;animation:hop 2.4s ease-in-out infinite}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.blink{animation:blink 4s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.ear{transform-box:fill-box;transform-origin:50% 10%;animation:ear 2.4s ease-in-out infinite}
+@keyframes ear{50%{transform:rotate(7deg)}}
+.tail{transform-box:fill-box;transform-origin:0 100%;animation:tail .5s ease-in-out infinite alternate}
+@keyframes tail{to{transform:rotate(22deg)}}
+.dots{display:flex;gap:6px;justify-content:center;margin:0 0 18px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--lilac);opacity:.5}.dots i.on{background:var(--rose-d);opacity:1}
+.hide{visibility:hidden}
+.card{background:var(--card);border-radius:24px;padding:20px;box-shadow:0 8px 24px rgba(120,60,90,.15);margin:14px 0}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{background:var(--bg2);color:var(--ink);box-shadow:none;border:2px solid var(--lilac);font-size:1rem;padding:12px 16px}
+.reply{min-height:3em;margin-top:14px;font-size:1.05rem}
+.grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin:12px 0;touch-action:none;user-select:none;-webkit-user-select:none}
+.cell{aspect-ratio:1;display:grid;place-items:center;font-weight:600;font-size:1.2rem;background:var(--card);border-radius:10px;border:2px solid transparent;cursor:pointer;user-select:none;padding:0;color:var(--ink);box-shadow:none}
+.cell.start{border-color:var(--rose-d);background:var(--butter)}
+.cell.found{background:var(--ok);color:#1d3a2c}
+.cell:active{transform:none}
+.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.clues{list-style:none;padding:0;margin:0;text-align:left}
+.clues li{padding:6px 0;font-size:.98rem}.clues li.done{color:var(--rose-d);font-weight:600}
+.poem{font-family:Caveat,"Segoe Script",cursive;font-size:1.65rem;line-height:1.35}
+.poem p{margin:0 0 .9em;opacity:0;animation:pop .9s forwards}
+.heart{position:fixed;bottom:-30px;pointer-events:none;animation:rise 6s linear forwards}
+@keyframes rise{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+</style>
+</head>
+<body>
+<main>
+
+<section id="s1" class="screen on">
+  <div class="bubble"><span id="say">…</span></div>
+  <svg id="dog" viewBox="0 0 200 200" role="img" aria-label="Perrito de caricatura">
+    <g class="tail"><path d="M150 160 q30 -10 28 -40" stroke="#b9763e" stroke-width="12" fill="none" stroke-linecap="round"/></g>
+    <ellipse cx="100" cy="162" rx="46" ry="32" fill="#f2c88b"/>
+    <ellipse cx="100" cy="170" rx="26" ry="20" fill="#fff0dc"/>
+    <path d="M70 138 q30 14 60 0" stroke="#ff7fa3" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <text x="100" y="152" font-size="16" text-anchor="middle">💛</text>
+    <g class="ear"><ellipse cx="42" cy="78" rx="20" ry="38" fill="#b9763e" transform="rotate(14 42 78)"/></g>
+    <g class="ear" style="animation-delay:.4s"><ellipse cx="158" cy="78" rx="20" ry="38" fill="#b9763e" transform="rotate(-14 158 78)"/></g>
+    <ellipse cx="100" cy="88" rx="58" ry="52" fill="#f2c88b"/>
+    <ellipse cx="100" cy="108" rx="30" ry="22" fill="#fff0dc"/>
+    <g class="blink"><circle cx="76" cy="80" r="9" fill="#3a2430"/><circle cx="73" cy="77" r="3" fill="#fff"/></g>
+    <g class="blink"><circle cx="124" cy="80" r="9" fill="#3a2430"/><circle cx="121" cy="77" r="3" fill="#fff"/></g>
+    <circle cx="62" cy="100" r="8" fill="#ff9db8" opacity=".6"/><circle cx="138" cy="100" r="8" fill="#ff9db8" opacity=".6"/>
+    <ellipse cx="100" cy="97" rx="10" ry="7" fill="#3a2430"/>
+    <path d="M100 104 v6 M88 112 q12 10 24 0" stroke="#3a2430" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M96 117 q4 14 8 0z" fill="#ff7fa3"/>
+  </svg>
+  <div class="dots" id="dots" style="margin-top:14px"></div>
+  <button id="go" class="hide">Un juegito 🎈</button>
+</section>
+
+<section id="s2" class="screen">
+  <h2>Preguntitas bonitas</h2>
+  <p>Aquí no hay respuestas malas 💛</p>
+  <div class="card"><div id="q"></div><div class="opts" id="opts"></div><div class="reply" id="reply"></div></div>
+  <button id="nextQ" class="hide">Seguir</button>
+</section>
+
+<section id="s3" class="screen">
+  <h2>Sopa de letras</h2>
+  <p>Desliza el dedo sobre cada palabra (también puedes tocar la primera y la última letra).</p>
+  <div class="grid" id="grid"></div>
+  <div class="card"><ul class="clues" id="clues"></ul></div>
+</section>
+
+<section id="s4" class="screen">
+  <h2>Para ti 💛</h2>
+  <div class="card poem" id="poem"></div>
+  <button id="again">Volver a empezar</button>
+</section>
+
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const show=n=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$('s'+n).classList.add('on');window.scrollTo(0,0)};
+
+/* 1. Frases del perrito */
+const frases=[
+ "¡Hola! Soy Copito y vine con un mensaje para una amiga muy especial 🐾",
+ "Tienes unos ojitos tan bonitos que parecen guardar estrellitas ✨",
+ "Tu pelo es precioso, y combina con tu forma de ser: suave y llena de cariño.",
+ "Tu risa es de las que le arreglan el día a cualquiera 😄",
+ "Eres pequeñita, pero tu corazón es enorme y tu personalidad, hermosa 💛",
+ "Contigo cualquier plan se vuelve más divertido y cualquier mal día, más ligero.",
+ "Tener una amiga como tú es una suerte. Yo lo sé, y hasta mi colita lo sabe 🐕",
+ "¿Lista? Tengo un juegito preparado para ti 🎈"
+];
+let fi=0,timer;
+$('dots').innerHTML=frases.map(()=>'<i></i>').join('');
+function decir(){
+  $('say').innerHTML='';const s=document.createElement('span');s.textContent=frases[fi];$('say').appendChild(s);
+  [...$('dots').children].forEach((d,i)=>d.classList.toggle('on',i<=fi));
+  if(fi===frases.length-1){$('go').classList.remove('hide');return}
+  timer=setTimeout(()=>{fi++;decir()},3800);
+}
+$('s1').addEventListener('click',e=>{if(e.target.id==='go'||fi>=frases.length-1)return;clearTimeout(timer);fi++;decir()});
+decir();
+$('go').onclick=()=>{show(2);pregunta()};
+
+/* 2. Preguntas */
+const qs=[
+ {q:"¿Qué hace especial a un día cualquiera?",o:["Un abrazo","Una risa bonita","Un perrito feliz 🐶"],r:["¡Los abrazos curan todo! Y los tuyos seguro son de los mejores.","¡Eso! Y la tuya es la más bonita que conozco.","¡Claro que sí! Yo muevo la colita por ti."]},
+ {q:"Si tu sonrisa fuera algo, sería…",o:["El sol de la mañana","Una flor que se abre","Una estrellita"],r:["Sí, de esos que calientan el corazón ☀️","Qué bonito: así de tierna y así de linda 🌸","Y brillaría hasta de día ⭐"]},
+ {q:"¿Cuál es la mejor medicina?",o:["Reír sin parar","Un abrazo largo","Chocolate 🍫"],r:["¡Y tú sabes reír como nadie!","Los abrazos largos son magia pura.","¡Respuesta sabia! Con chocolate todo mejora."]}
+];
+let qi=0;
+function pregunta(){
+  const x=qs[qi];$('q').textContent=x.q;$('reply').textContent='';$('nextQ').classList.add('hide');
+  $('opts').innerHTML='';
+  x.o.forEach((t,i)=>{const b=document.createElement('button');b.className='opt';b.textContent=t;
+    b.onclick=()=>{$('reply').textContent=x.r[i];$('nextQ').textContent=qi<qs.length-1?'Seguir':'¡A la sopa de letras!';$('nextQ').classList.remove('hide')};
+    $('opts').appendChild(b)});
+}
+$('nextQ').onclick=()=>{qi++;if(qi<qs.length)pregunta();else{show(3);iniciarSopa()}};
+
+/* 3. Sopa de letras (8x8) */
+const W=[
+ ["SONRISA",0,0,0,1,"Lo que regalas sin darte cuenta"],
+ ["BRILLAS",2,1,0,1,"Lo que haces al llegar a cualquier lugar"],
+ ["DULCE",2,0,1,0,"Así es tu forma de ser"],
+ ["LUZ",2,4,1,0,"Lo que llevas dentro"],
+ ["AMIGA",5,2,0,1,"Lo que eres para mí, y de las mejores"],
+ ["OJOS",6,3,0,1,"Dos estrellitas en tu carita"],
+ ["BELLA",7,3,0,1,"Por dentro y por fuera"]
+]; // [palabra, fila, col, dFila, dCol, pista]
+let cells=[],start=null,hallados=0;
+function iniciarSopa(){
+  const g=Array.from({length:8},()=>Array(8).fill(''));
+  W.forEach(([w,r,c,dr,dc])=>{for(let i=0;i<w.length;i++)g[r+dr*i][c+dc*i]=w[i]});
+  const rel="AEIOLMNRSTCA";
+  $('grid').innerHTML='';cells=[];pend=null;drag=null;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const b=document.createElement('button');b.className='cell';b.textContent=g[r][c]||rel[Math.floor(Math.random()*rel.length)];
+    b.setAttribute('aria-label','Letra '+b.textContent);
+    b.dataset.i=r*8+c;$('grid').appendChild(b);cells.push(b);
+  }
+  $('clues').innerHTML=W.map((x,i)=>`<li id="cl${i}">${'_ '.repeat(x[0].length).trim()} — ${x[5]}</li>`).join('');
+}
+let pend=null,drag=null,cur=[];
+const cellAt=(x,y)=>{const e=document.elementFromPoint(x,y);return e&&e.classList.contains('cell')?+e.dataset.i:null};
+const pintar=ix=>{cells.forEach(c=>c.classList.remove('start'));ix.forEach(i=>cells[i].classList.add('start'))};
+const linea=(a,b)=>{const r0=a>>3,c0=a&7,r1=b>>3,c1=b&7;if(r0!==r1&&c0!==c1)return[a];const n=Math.max(Math.abs(r1-r0),Math.abs(c1-c0))+1,dr=Math.sign(r1-r0),dc=Math.sign(c1-c0);return Array.from({length:n},(_,i)=>(r0+dr*i)*8+c0+dc*i)};
+const gr=$('grid');
+gr.onpointerdown=e=>{const i=cellAt(e.clientX,e.clientY);if(i===null)return;e.preventDefault();drag=i;cur=pend!==null?linea(pend,i):[i];pintar(cur)};
+gr.onpointermove=e=>{if(drag===null)return;const i=cellAt(e.clientX,e.clientY);if(i===null)return;cur=linea(drag,i);pintar(cur)};
+const fin=()=>{if(drag===null)return;
+  if(cur.length<2){pend=pend===drag?null:drag;pintar(pend===null?[]:[pend])}
+  else{pend=null;const x=cur;pintar([]);probar(x)}
+  drag=null};
+gr.onpointerup=fin;gr.onpointercancel=fin;
+function probar(idx){
+  const s=idx.map(i=>cells[i].textContent).join('');
+  const k=W.findIndex(x=>x[0]===s||x[0]===[...s].reverse().join(''));
+  if(k<0){idx.forEach(i=>{cells[i].classList.add('shake');setTimeout(()=>cells[i].classList.remove('shake'),300)});return}
+  const li=$('cl'+k);if(li.classList.contains('done'))return;
+  idx.forEach(i=>cells[i].classList.add('found'));
+  li.classList.add('done');li.textContent=W[k][0]+' — '+W[k][5];
+  if(++hallados===W.length)setTimeout(final,1200);
+}
+
+/* 4. Mensaje final */
+const poema=[
+ "Hay amigas que llegan sin hacer ruido",
+ "y de pronto todo se siente más bonito.",
+ "Tu risa es una canción que se queda en el aire.",
+ "Tus ojos, dos lucecitas que no saben apagarse.",
+ "Eres pequeña por fuera,<br>pero por dentro eres un cielo entero.",
+ "Gracias por ser mi amiga.<br>Por ser tú, tal cual.<br><b>Fabulosa.</b> 💛"
+];
+function final(){
+  show(4);$('poem').innerHTML=poema.map((t,i)=>`<p style="animation-delay:${i*1.6}s">${t}</p>`).join('');
+  for(let i=0;i<22;i++)setTimeout(()=>{const h=document.createElement('div');h.className='heart';h.textContent=['💗','💛','✨','💜'][i%4];
+    h.style.left=Math.random()*95+'vw';h.style.fontSize=(16+Math.random()*22)+'px';document.body.appendChild(h);setTimeout(()=>h.remove(),6000)},i*350);
+}
+$('again').onclick=()=>{fi=0;qi=0;hallados=0;start=null;show(1);decir()};
+</script>
+</body>
+</html>
